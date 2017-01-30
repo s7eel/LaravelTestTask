@@ -11,7 +11,12 @@
 |
 */
 
-Auth::routes();
+/**
+ * Маршруты аутентификации и выхода пользователя
+ */
+Route::post('/', ['uses'=>'Auth\MyAuthController@authUser']);
+Route::post('/logout', 'Auth\MyAuthController@logoutUser');
+
 /**
  * маршрут на главную страницу сайта
  */
@@ -31,6 +36,8 @@ Route::post('/edit/{id?}', ['uses'=>'MyController@saveArticle', 'as'=>'save_arti
 Route::get('/delete/{id}', ['uses'=>'MyController@deleteArticle']);
 
 
-
-
+/**
+ * Альтернативный путь логаута POST запросом
+ */
+//\App\Http\Controllers\Auth\LoginController@logout
 
