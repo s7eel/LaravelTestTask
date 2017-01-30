@@ -7,7 +7,6 @@ use App\User;
 use App\Article;
 use Auth;
 
-
 class MyController extends Controller
 {
 
@@ -16,10 +15,10 @@ class MyController extends Controller
      * с учетом пагинации
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(){
-
+    public function show()
+    {
         $articles = Article::paginate(5);
-        return view('index', ['articles'=>$articles,]);
+        return view('index', ['articles' => $articles,]);
     }
 
     /**
@@ -28,10 +27,10 @@ class MyController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * редирект на страницу просмотра объявления
      */
-    public function showArticle($id){
-
+    public function showArticle($id)
+    {
         $article = Article::find($id);
-        return view('showarticle', ['article'=>$article,]);
+        return view('showarticle', ['article' => $article,]);
     }
 
     /**
@@ -39,18 +38,18 @@ class MyController extends Controller
      * если не NULL - происхходит редактирование объявления
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-
-    public function createArticle($id=NULL){
-
-        if(!$id){
-            $article = NULL;
+    public function createArticle($id = null)
+    {
+        if (!$id) {
+            $article = null;
             $button = 'Create';
-        }else{
+        } else {
             $article = Article::find($id);
             $button = 'Save';
         }
-        return view('addarticle',['article'=>$article,
-                                  'button' =>$button,
+        return view('addarticle', [
+            'article' => $article,
+            'button' => $button,
         ]);
     }
 
@@ -63,24 +62,24 @@ class MyController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * редирект на страницу новосозданного или отредактированного объявления
      */
-    public function saveArticle(Request $request, $id=NULL){
-
+    public function saveArticle(Request $request, $id = null)
+    {
         $user = Auth::user();
-        if($request->isMethod('post')){
+        if ($request->isMethod('post')) {
             $rules = array(
-              'title' => 'required',
-              'description' => 'required',
+                'title' => 'required',
+                'description' => 'required',
             );
-        $this->validate($request, $rules);
+            $this->validate($request, $rules);
         }
-        if(!$id){
+        if (!$id) {
             $article = new Article([
                 'title' => $request->title,
                 'description' => $request->description,
             ]);
             $currentID = $user->articles()->save($article);
             return redirect()->route('show_article', ['id' => $currentID->id]);
-        }else{
+        } else {
             $article = Article::find($id);
             $article->update([
                 'title' => $request->title,
@@ -96,13 +95,11 @@ class MyController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * редирект на главную страницу
      */
-
-    public function deleteArticle($id){
-
+    public function deleteArticle($id)
+    {
         $article = Article::find($id);
         $article->delete();
         return redirect()->route('index_page');
-
     }
 }
 
