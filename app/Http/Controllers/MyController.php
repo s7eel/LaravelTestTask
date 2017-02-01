@@ -40,21 +40,26 @@ class MyController extends Controller
      */
     public function createArticle($id = null)
     {
-        if (!$id) {
-            $article = null;
-            $button = 'Create';
-        } else {
-            $article = Article::find($id);
-            $user = Auth::id();
-            $button = 'Save';
-            if($article->user_id != $user){
-                return redirect()->route('index_page');
+        if(Auth::check()){
+            if (!$id) {
+                $article = null;
+                $button = 'Create';
+            } else {
+                $article = Article::find($id);
+                $user = Auth::id();
+                $button = 'Save';
+                if($article->user_id != $user){
+                    return redirect()->route('index_page');
+                }
             }
+            return view('addarticle', [
+                'article' => $article,
+                'button' => $button,
+            ]);
+        }else{
+            return redirect()->route('index_page');
         }
-        return view('addarticle', [
-            'article' => $article,
-            'button' => $button,
-        ]);
+
     }
 
     /**
