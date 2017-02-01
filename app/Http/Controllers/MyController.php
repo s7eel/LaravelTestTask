@@ -45,7 +45,11 @@ class MyController extends Controller
             $button = 'Create';
         } else {
             $article = Article::find($id);
+            $user = Auth::id();
             $button = 'Save';
+            if($article->user_id != $user){
+                return redirect()->route('index_page');
+            }
         }
         return view('addarticle', [
             'article' => $article,
@@ -72,6 +76,9 @@ class MyController extends Controller
             );
             $this->validate($request, $rules);
         }
+        /**
+         * Создание нового объявления
+         */
         if (!$id) {
             $article = new Article([
                 'title' => $request->title,
@@ -79,13 +86,20 @@ class MyController extends Controller
             ]);
             $currentID = $user->articles()->save($article);
             return redirect()->route('show_article', ['id' => $currentID->id]);
+        /**
+         * Редактирование объявления
+         */
         } else {
             $article = Article::find($id);
-            $article->update([
-                'title' => $request->title,
-                'description' => $request->description,
-            ]);
-            return redirect()->route('show_article', ['id' => $id]);
+            if($article->user_id === Auth::id()){
+                $article->update([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                ]);
+                return redirect()->route('show_article', ['id' => $id]);
+            }else{
+                return redirect()->route('index_page');
+            }
         }
     }
 
@@ -97,8 +111,13 @@ class MyController extends Controller
      */
     public function deleteArticle($id)
     {
-        $article = Article::find($id);
-        $article->delete();
+        if(Auth::check()){
+            $article = Article::find($id);
+            $user = Auth::id();
+            if($article->user_id === $user){
+                $article->delete();
+            }
+        }
         return redirect()->route('index_page');
     }
 }

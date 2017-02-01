@@ -1,0 +1,5 @@
+
+.panel-body td {
+    max-width: 300px!important;
+    word-wrap: break-word;
+}

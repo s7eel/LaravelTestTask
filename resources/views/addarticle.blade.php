@@ -50,6 +50,11 @@
                                     <button type="submit" class="btn btn-primary">
                                         {{ $button }}
                                     </button>
+                                    <a href="{{ route('index_page') }}">
+                                        <button type="button" class="btn btn-primary">
+                                            Main
+                                        </button>
+                                    </a>
                                 </div>
                             </div>
                         </form>
